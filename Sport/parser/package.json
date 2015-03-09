@@ -1,0 +1,12 @@
+{
+  "name": "parser",
+  "version": "0.0.1",
+  "private": true,
+
+  "dependencies": {
+      "q": "~0.8.12",
+      "cheerio": "*",
+      "iconv": "*",
+      "request": "*"
+  }
+}
