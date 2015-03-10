@@ -9,6 +9,11 @@ module.exports = {
 
     attributes: {
 
+        active: {
+            type: 'boolean',
+            default: false
+        },
+
         name: {
             type: 'string',
             required: true
