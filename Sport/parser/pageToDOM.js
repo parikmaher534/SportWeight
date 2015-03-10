@@ -18,7 +18,7 @@ var proxyList = [
 function getPageDOM(data) {
     var html = '',
         name = url.parse(data.url).path.replace(/\//g, '_'),
-        currentProxy = proxyList[0],
+        currentProxy = proxyList[1],
         wget = spawn('wget', ['-L', '-S', '-O', './wget/' + name, '--proxy', currentProxy, data.url]);
 
     console.log('wget -L -S -O ../wget/' + name + ' --proxy ' + currentProxy + ' ' + data.url);

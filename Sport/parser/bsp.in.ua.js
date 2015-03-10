@@ -11,23 +11,28 @@ var page = 1,
     category = 0,
     host = 'http://bsp.in.ua',
     urls = [
-        "http://bsp.in.ua/gejner"//,
-        // "http://bsp.in.ua/protein",
-        // "http://bsp.in.ua/aminokisloty",
-        // "http://bsp.in.ua/kreatin",
-        // "http://bsp.in.ua/sportivnye-vitaminy",
-        // "http://bsp.in.ua/dlya-sustavov-i-svyazok",
-        // "http://bsp.in.ua/zhiroszhigateli",
-        // "http://bsp.in.ua/sportivnye-batonchiki",
-        // "http://bsp.in.ua/predtrenirovochnye-kompleksy",
-        // "http://bsp.in.ua/sportivnye-energetiki",
-        // "http://bsp.in.ua/specialnye-sportivnye-preparaty"
+        "http://bsp.in.ua/gejner",
+        "http://bsp.in.ua/protein",
+        "http://bsp.in.ua/aminokisloty",
+        "http://bsp.in.ua/kreatin",
+        "http://bsp.in.ua/sportivnye-vitaminy",
+        "http://bsp.in.ua/dlya-sustavov-i-svyazok",
+        "http://bsp.in.ua/zhiroszhigateli",
+        "http://bsp.in.ua/sportivnye-batonchiki",
+        "http://bsp.in.ua/predtrenirovochnye-kompleksy",
+        "http://bsp.in.ua/sportivnye-energetiki",
+        "http://bsp.in.ua/specialnye-sportivnye-preparaty"
     ],
     links = [];
 
 function ItemSchema() {
     return mongoose.model('Item',
         mongoose.Schema({
+
+            active: {
+                type: Boolean,
+                default: false
+            },
 
             createdAt: {
                 type: Date,
@@ -117,7 +122,7 @@ function getItemsLinks($) {
         });
 
         pageToDOM.get({
-            url: urls[category] + '/page/' + 12,//page,
+            url: urls[category] + '/page/' + page,
             callback: function($) {
                 if ($) {
                     getItemsLinks($);
@@ -146,7 +151,8 @@ function loadItem() {
                 callback: function($) {
                     var src = $('.item_bigpic img').attr('src'),
                         pathArr = src.split('/'),
-                        imgId = pathArr.pop().replace('_2', '');
+                        imgFullId = pathArr.pop(),
+                        imgId = imgFullId.replace('_2', '');
 
                     pathArr.pop();
                     src = pathArr.join('/') + '/' + imgId;
@@ -155,8 +161,8 @@ function loadItem() {
                         name: $('.pagetitle').text(),
                         category: $('#breadcrumb li').last().prev().prev().text(),
                         manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
-                        photo: host + '/' + src,
-                        photoFull: host + '/' + $('.item_bigpic img').attr('src'),
+                        photoFull: host + '/' + src,
+                        photo: host + '/' + $('.item_bigpic img').attr('src'),
                         description: $('.tab-content .tab-pane p').text(),
                         price: $('.tre_price').text()
                     }, function(err, doc) {
@@ -180,17 +186,49 @@ function loadItem() {
 function loadItemsImages() {
     Item.find()
         .exec(function(err, docs) {
+            var imgDefers = [];
+
             docs.forEach(function(item, i) {
+                var d = Q.defer();
+                imgDefers.push(d.promise);
+
                 setTimeout(function() {
+                    var minImgD = Q.defer(),
+                        originImgD = Q.defer(),
+                        defs = [minImgD.promise, originImgD.promise];
+
                     download(item.photo, 'images/' + item.photo.split('/').pop(), function() {
                         console.log(item.photo, ' done downloading...');
+                        minImgD.resolve();
                     });
 
                     download(item.photoFull, 'images/' + item.photoFull.split('/').pop(), function() {
                         console.log(item.photoFull, ' done downloading...');
+                        originImgD.resolve();
+                    });
+
+                    Q.allResolved(defs).then(function() {
+                        d.resolve();
                     });
                 }, 100 * i);
             });
+
+            Q.allResolved(imgDefers).then(function() {
+                updateItemImagesLinks();
+            });
+        });
+};
+
+function updateItemImagesLinks() {
+    Item.find()
+        .exec(function(err, docs) {
+            docs.forEach(function(item, i) {
+                item.photo = 'images/' + item.photo.split('/').pop();
+                item.photoFull = 'images/' + item.photoFull.split('/').pop();
+                item.save();
+            });
+
+            console.log('All done');
         });
 };
 
