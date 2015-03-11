@@ -5,7 +5,7 @@ var pageToDOM = require('./pageToDOM.js');
     request = require('request'),
     mongoose = require('mongoose');
 
-var Item;
+var Item, Category;
 
 var page = 1,
     category = 0,
@@ -24,6 +24,18 @@ var page = 1,
         "http://bsp.in.ua/specialnye-sportivnye-preparaty"
     ],
     links = [];
+
+
+function CategorySchema() {
+    return mongoose.model('Category',
+        mongoose.Schema({
+            name: {
+                type: String,
+                require: true
+            }
+        })
+    );
+};
 
 function ItemSchema() {
     return mongoose.model('Item',
@@ -90,6 +102,8 @@ function ItemSchema() {
     mongoose.connection
         .once('open', function() {
             Item = ItemSchema();
+            Category = CategorySchema();
+
             console.log('Mongoose was connected successfully.');
 
             getCategory();
@@ -149,29 +163,56 @@ function loadItem() {
             pageToDOM.get({
                 url: link,
                 callback: function($) {
-                    var src = $('.item_bigpic img').attr('src'),
-                        pathArr = src.split('/'),
-                        imgFullId = pathArr.pop(),
-                        imgId = imgFullId.replace('_2', '');
+                    if ($) {
+                        var src = $('.item_bigpic img').attr('src'),
+                            category = $('#breadcrumb li').last().prev().prev().text(),
+                            pathArr = src.split('/'),
+                            imgFullId = pathArr.pop(),
+                            imgId = imgFullId.replace('_2', '');
 
-                    pathArr.pop();
-                    src = pathArr.join('/') + '/' + imgId;
+                        pathArr.pop();
+                        src = pathArr.join('/') + '/' + imgId;
 
-                    Item.create({
-                        name: $('.pagetitle').text(),
-                        category: $('#breadcrumb li').last().prev().prev().text(),
-                        manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
-                        photoFull: host + '/' + src,
-                        photo: host + '/' + $('.item_bigpic img').attr('src'),
-                        description: $('.tab-content .tab-pane p').text(),
-                        price: $('.tre_price').text()
-                    }, function(err, doc) {
-                        if (!err) {
-                            d.resolve();
-                        } else {
-                            d.reject(err);
-                        }
-                    });
+                        Category.findOne({name: category}, function(err, doc) {
+                            if (!doc) {
+                                Category.create({name: category}, function(err, doc) {
+                                    Item.create({
+                                        name: $('.pagetitle').text(),
+                                        category: category,
+                                        manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
+                                        photoFull: host + '/' + src,
+                                        photo: host + '/' + $('.item_bigpic img').attr('src'),
+                                        description: $('.tab-content .tab-pane p').text(),
+                                        price: $('.tre_price').text()
+                                    }, function(err, doc) {
+                                        if (!err) {
+                                            d.resolve();
+                                        } else {
+                                            d.reject(err);
+                                        }
+                                    });
+                                });
+                            } else {
+                                Item.create({
+                                    name: $('.pagetitle').text(),
+                                    category: category,
+                                    manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
+                                    photoFull: host + '/' + src,
+                                    photo: host + '/' + $('.item_bigpic img').attr('src'),
+                                    description: $('.tab-content .tab-pane p').text(),
+                                    price: $('.tre_price').text()
+                                }, function(err, doc) {
+                                    if (!err) {
+                                        d.resolve();
+                                    } else {
+                                        d.reject(err);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        d.resolve();
+                    }
                 }
             });
         }, 100 * i);
@@ -186,36 +227,40 @@ function loadItem() {
 function loadItemsImages() {
     Item.find()
         .exec(function(err, docs) {
-            var imgDefers = [];
+            // var imgDefers = [];
 
-            docs.forEach(function(item, i) {
-                var d = Q.defer();
-                imgDefers.push(d.promise);
+            // docs.forEach(function(item, i) {
+            //     var d = Q.defer();
+            //     imgDefers.push(d.promise);
 
-                setTimeout(function() {
-                    var minImgD = Q.defer(),
-                        originImgD = Q.defer(),
-                        defs = [minImgD.promise, originImgD.promise];
+            //     setTimeout(function() {
+            //         // var minImgD = Q.defer(),
+            //         //     originImgD = Q.defer(),
+            //         //     defs = [minImgD.promise, originImgD.promise];
 
-                    download(item.photo, 'images/' + item.photo.split('/').pop(), function() {
-                        console.log(item.photo, ' done downloading...');
-                        minImgD.resolve();
-                    });
+            //         // download(item.photo, 'images/' + item.photo.split('/').pop(), function() {
+            //         //     console.log(item.photo, ' done downloading...');
+            //         //     minImgD.resolve();
+            //         // });
 
-                    download(item.photoFull, 'images/' + item.photoFull.split('/').pop(), function() {
-                        console.log(item.photoFull, ' done downloading...');
-                        originImgD.resolve();
-                    });
+            //         // download(item.photoFull, 'images/' + item.photoFull.split('/').pop(), function() {
+            //         //     console.log(item.photoFull, ' done downloading...');
+            //         //     originImgD.resolve();
+            //         // });
 
-                    Q.allResolved(defs).then(function() {
-                        d.resolve();
-                    });
-                }, 100 * i);
-            });
+            //         // Q.allResolved(defs).then(function() {
+            //         //     d.resolve();
+            //         // });
 
-            Q.allResolved(imgDefers).then(function() {
-                updateItemImagesLinks();
-            });
+            //     }, 100 * i);
+            // });
+
+            // Q.allResolved(imgDefers).then(function() {
+            //     updateItemImagesLinks();
+            // });
+
+            /* Уже есть дамп картинок. Если нужно ещё раз выгрузить то разкомментить код сверху */
+            updateItemImagesLinks();
         });
 };
 
