@@ -1,13 +1,14 @@
 <div class="item">
+    <div class="item__wrapper">
+        <div class="item-img">
+            <img src="/<%=item.photo%>" />
+        </div>
 
-    <div class="item-img">
-        <img src="/<%=item.photo%>" />
-    </div>
-
-    <div class="item-info">
-        <p class="item-info__name"><%=item.name%></p>
-        <p class="item-info__manufacturer"><%=item.manufacturer%></p>
-        <p class="item-info__category"><%=item.category%></p>
-        <p class="item-info__price"><%=item.price%></p>
+        <div class="item-info">
+            <p class="item-info__name"><%=item.name%></p>
+            <p class="item-info__manufacturer"><%=item.manufacturer%></p>
+            <p class="item-info__category link"><%=item.category%></p>
+            <p class="item-info__price"><%=item.price%></p>
+        </div>
     </div>
 </div>

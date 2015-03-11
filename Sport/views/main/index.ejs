@@ -1,28 +1,18 @@
-<header>
-    <div class="logo">
-        <img src="/images/logo/logo_new.png" />
-    </div>
-    <span>Спортивное питание</span>
-</header>
+<%- include header.ejs %>
 
-<div class="sidebar">
-    <ul>
-        <li>Гейнеры</li>
-        <li>Протеины</li>
-        <li>Аминокислоты</li>
-        <li>Энергетики</li>
-        <li>Витамины</li>
-        <li>Креатин</li>
-    </ul>
-
-    <div class="search">
-        <div class="search__label">Найти товар:</div>
-        <input type="text" />
-    </div>
-</div>
+<%- include sidebar.ejs %>
 
 <div class="items">
-    <%items.forEach(function(item) {%>
-        <%- include item.ejs %>
-    <%})%>
+    <div class="item__row">
+        <%items.forEach(function(item, i) {%>
+            <%if (i != 0 && i % 2 == 0) {%>
+                </div>
+                <div class="item__row">
+            <%}%>
+
+            <%- include item.ejs %>
+        <%})%>
+    </div>
 </div>
+
+<%- include info-block.ejs %>
