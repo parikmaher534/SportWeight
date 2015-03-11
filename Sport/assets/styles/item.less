@@ -2,20 +2,25 @@
 
 .item
 {
-    display: table;
-    float: left;
+    display: table-cell;
 
-    margin: 10px;
-    padding: 10px;
+    padding: 8px;
 
-    width: 42%;
+    width: 50%;
     height: @itemHg;
 
-    box-shadow: 0 0 10px #CCC;
     overflow: hidden;
 
     font-family: Verdana;
     font-size: 12px;
+
+
+    .item__wrapper
+    {
+        padding: 10px;
+
+        box-shadow: 0 0 10px #CCC;
+    }
 
     .item-img
     {
@@ -43,7 +48,7 @@
     {
         text-transform: uppercase;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .item-info__price
@@ -52,11 +57,6 @@
 
         font-weight: bold;
         text-decoration: underline;
-    }
-
-    .item-info__category
-    {
-        color: rgb(39, 116, 199);
     }
 
     .item-info__manufacturer
