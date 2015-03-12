@@ -19,11 +19,6 @@ module.exports = {
             required: true
         },
 
-        category: {
-            type: 'string',
-            required: true
-        },
-
         description: {
             type: 'string'
         },
