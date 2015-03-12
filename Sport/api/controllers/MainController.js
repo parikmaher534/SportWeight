@@ -2,17 +2,30 @@
  * MainController
  *
  */
-var DEFAULT_LIMIT = 10;
+var DEFAULT_LIMIT = 300,
+    DEFAULT_CATEGORY = 'Гейнер';
 
 module.exports = {
     index: function(req, res) {
-        Items.find()
-             .limit(DEFAULT_LIMIT)
-             .exec(function(err, items) {
-                res.view({
-                    items: items
-                });
-             });
+
+        Categories.find(function(err, categories) {
+            if (!err) {
+
+                Items.find({
+                        category: DEFAULT_CATEGORY
+                     })
+                     .limit(DEFAULT_LIMIT)
+                     .exec(function(err, items) {
+                        res.view({
+                            items: items,
+                            categories: categories
+                        });
+                     });
+
+            } else {
+                res.view();
+            }
+        });
     }
 };
 
