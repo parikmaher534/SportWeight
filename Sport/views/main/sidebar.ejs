@@ -1,10 +1,9 @@
 <div class="sidebar">
     <ul>
-        <li>Гейнеры</li>
-        <li>Протеины</li>
-        <li>Аминокислоты</li>
-        <li>Энергетики</li>
-        <li>Витамины</li>
-        <li>Креатин</li>
+        <%categories.forEach(function(category, i) {%>
+            <li data-type="<%=category.name%>"><%=category.name%></li>
+        <%})%>
     </ul>
+
+    <div class="sidebar__more link">Показать все категории</div>
 </div>

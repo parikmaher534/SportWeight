@@ -11,8 +11,14 @@
             <%}%>
 
             <%- include item.ejs %>
+
+            <%if (i == items.length - 1) {%>&nbsp;<%}%>
         <%})%>
     </div>
 </div>
 
+<div class="paginator"></div>
+
 <%- include info-block.ejs %>
+
+<%- include handlebars-tmpls.ejs %>
