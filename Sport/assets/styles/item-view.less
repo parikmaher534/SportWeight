@@ -1,0 +1,60 @@
+.item-view
+{
+    display: none;
+    position: relative;
+
+    margin: 100px 220px 0 250px;
+
+    .item-view__close
+    {
+        position: absolute;
+        right: 0;
+
+        -webkit-transform-origin: 0;
+        -webkit-transform: rotate(45deg);
+                transform: rotate(45deg);
+
+        font-size: 38px;
+        cursor: pointer;
+    }
+
+    .item-view__image
+    {
+        text-align: center;
+
+        img
+        {
+            max-height: 400px;
+        }
+    }
+
+    .item-view__name h3
+    {
+        display: inline-block;
+    }
+
+    .item-view__description
+    {
+        margin: 20px 0 40px 0;
+
+        text-align: justify;
+        font-size: 14px;
+    }
+
+    .item-view__manufacturer
+    {
+        margin: 3px 0;
+
+        font-size: 13px;
+    }
+
+    .item-view__price
+    {
+        font-size: 13px;
+    }
+
+    .item-view-meta
+    {
+        margin-top: 40px;
+    }
+}
