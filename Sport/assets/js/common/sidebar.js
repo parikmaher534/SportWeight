@@ -26,6 +26,8 @@ $(function() {
     ul.on('click', function(e) {
         var li = $(e.target).closest('li');
 
+        $(document).trigger('itemview.hide');
+
         if (li.length) {
             $.ajax({
                 url: '/items',

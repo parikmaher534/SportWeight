@@ -64,7 +64,7 @@ function ItemSchema() {
 
             category:  {
                 type: String,
-                require: true
+                trim: true
             },
 
             description: {
@@ -182,7 +182,7 @@ function loadItem() {
                                         manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
                                         photoFull: host + '/' + src,
                                         photo: host + '/' + $('.item_bigpic img').attr('src'),
-                                        description: $('.tab-content .tab-pane p').text(),
+                                        description: $('.tab-content .tab-pane p').html(),
                                         price: $('.tre_price').text()
                                     }, function(err, doc) {
                                         if (!err) {

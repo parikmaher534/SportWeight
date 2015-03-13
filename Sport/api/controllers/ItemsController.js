@@ -14,9 +14,14 @@ module.exports = {
         var offset = req.query.offset || DEFAULT_OFFSET,
             limit = req.query.limit || DEFAULT_LIMIT,
             type = req.query.type,
+            id = req.query.id,
             query = {};
 
-        query.category = type || DEFAULT_CATEGORY;
+        if (id) {
+            query.id = id;
+        } else {
+            query.category = type || DEFAULT_CATEGORY;
+        }
 
         Items.find(query)
              .skip(offset)
