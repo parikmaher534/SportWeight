@@ -1,5 +1,7 @@
 $(function() {
-    var sidebar = $('.sidebar'),
+    var optimalHg,
+        lisHg = 0,
+        sidebar = $('.sidebar'),
         ul = sidebar.find('ul'),
         posY = sidebar.position().top,
         moreBtn = sidebar.find('.sidebar__more'),
@@ -7,8 +9,15 @@ $(function() {
 
 
     // Магия для красивого показа категорий
-    if (sidebar.outerHeight(true) > $(window).outerHeight() - posY){
-        ul.css('height', $(window).outerHeight() - posY - (moreBtnHg * 2));
+    if (sidebar.outerHeight(true) > $(window).outerHeight() - posY) {
+        optimalHg = $(window).outerHeight() - posY - (moreBtnHg * 3);
+
+        ul.find('li').each(function() {
+            if (lisHg <= optimalHg) lisHg += $(this).outerHeight();
+        });
+
+        ul.css('height', lisHg);
+
         moreBtn.show();
     };
 
@@ -41,7 +50,7 @@ $(function() {
                     drawItems(data);
                 },
                 error: function() {
-                    alert('Не возможно получить список товаров.');
+                    $.notify('Не возможно получить список товаров.', 'error');
                 }
             });
         }

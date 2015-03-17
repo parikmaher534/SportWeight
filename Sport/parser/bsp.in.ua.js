@@ -73,7 +73,7 @@ function ItemSchema() {
             },
 
             price: {
-                type: String,
+                type: Number,
                 require: true
             },
 
@@ -138,7 +138,9 @@ function getItemsLinks($) {
         pageToDOM.get({
             url: urls[category] + '/page/' + page,
             callback: function($) {
-                if ($) {
+                if (
+                    $ && $('.padding_tovar .product_image a').length
+                ) {
                     getItemsLinks($);
                 } else {
                     page = 1;
@@ -182,8 +184,8 @@ function loadItem() {
                                         manufacturer: $('#prodprice_table .hidden-xs').first().contents().eq(3).text(),
                                         photoFull: host + '/' + src,
                                         photo: host + '/' + $('.item_bigpic img').attr('src'),
-                                        description: $('.tab-content .tab-pane p').html(),
-                                        price: $('.tre_price').text()
+                                        description: $('.tab-content .tab-pane p').text(),
+                                        price: /\d+/.exec($('.tre_price').text().replace(/\s/g, ''))[0]
                                     }, function(err, doc) {
                                         if (!err) {
                                             d.resolve();
@@ -200,7 +202,7 @@ function loadItem() {
                                     photoFull: host + '/' + src,
                                     photo: host + '/' + $('.item_bigpic img').attr('src'),
                                     description: $('.tab-content .tab-pane p').text(),
-                                    price: $('.tre_price').text()
+                                    price: /\d+/.exec($('.tre_price').text().replace(/\s/g, ''))[0]
                                 }, function(err, doc) {
                                     if (!err) {
                                         d.resolve();
@@ -215,7 +217,7 @@ function loadItem() {
                     }
                 }
             });
-        }, 100 * i);
+        }, 200 * i);
     });
 
     Q.allResolved(defs).then(function() {

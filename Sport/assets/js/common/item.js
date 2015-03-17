@@ -12,17 +12,30 @@ $(function() {
 
 
     /* API BEGIN*/
-
-    $(document).on('itemview.hide', hide);
-
+        $(document).on('itemview.hide', hide);
     /* API END */
 
 
     itemsBlock.on('click', function(e) {
         var id,
-            item = $(e.target).closest('.item');
+            el = $(e.target),
+            item = el.closest('.item');
 
         beforeScroll = window.scrollY;
+
+        // Игнорим событие при вводе чиса товаров
+        if (el.closest('.item__buy').length) return false;
+
+        // Добавляем товар в корзину
+        if (el.closest('.item__cart').length) {
+            $(document).trigger('card.add', {
+                amount: +item.find('.item__buy-input').val(),
+                block: item
+            });
+
+            return false;
+        };
+
 
         if (item) {
             id = item.data('id');
@@ -43,13 +56,13 @@ $(function() {
                         itemManuf.html(data[0].manufacturer);
                         itemPrice.html(data[0].price);
 
-                        itemView.show();
+                        itemView.addClass('item-view__show');
                         $('.items').hide();
 
                         $('body').scrollTop(0);
                     },
                     error: function() {
-                        alert('Не возможно получить список товаров.');
+                        $.notify('Не возможно получить список товаров.', 'error');
                     }
                 });
             }
@@ -60,13 +73,13 @@ $(function() {
 
     function hide() {
         $('.items').show();
-        itemView.hide();
+        itemView.removeClass('item-view__show');
 
         $('body').scrollTop(beforeScroll);
     };
 
     function clearView() {
-        itemImg.attr('src', '');
+        itemImg.attr('src', '/images/loaders/item.GIF');
         itemDesc.html('');
         itemName.html('');
         itemManuf.html('');

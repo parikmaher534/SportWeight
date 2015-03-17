@@ -8,7 +8,18 @@
             <p class="item-info__name"><%=item.name%></p>
             <p class="item-info__manufacturer"><%=item.manufacturer%></p>
             <p class="item-info__category link"><%=item.category%></p>
-            <p class="item-info__price"><%=item.price%></p>
+            <p class="item-info__price"><%=item.price%> руб</p>
+
+            <div class="item__buy">
+                <label>Купить</label>
+                <input type="number" value="1" min="0" class="item__buy-input"/>
+                <span>шт.</span>
+            </div>
+
+            <div class="item__cart">
+                <i class="fa fa-shopping-cart"></i>
+                <span>В корзину</span>
+            </div>
         </div>
     </div>
 </div>

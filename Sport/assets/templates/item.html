@@ -9,7 +9,18 @@
                 <p class="item-info__name">{{name}}</p>
                 <p class="item-info__manufacturer">{{manufacturer}}</p>
                 <p class="item-info__category link">{{category}}</p>
-                <p class="item-info__price">{{price}}</p>
+                <p class="item-info__price">{{price}} руб</p>
+
+                <div class="item__buy">
+                    <label>Купить</label>
+                    <input type="number" value="1" min="0" class="item__buy-input"/>
+                    <span>шт.</span>
+                </div>
+
+                <div class="item__cart">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>В корзину</span>
+                </div>
             </div>
         </div>
     </div>

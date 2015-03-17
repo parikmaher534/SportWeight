@@ -2,23 +2,25 @@
 
 <%- include sidebar.ejs %>
 
-<div class="items">
-    <div class="item__row">
-        <%items.forEach(function(item, i) {%>
-            <%if (i != 0 && i % 2 == 0) {%>
-                </div>
-                <div class="item__row">
-            <%}%>
+<div class="wrapper">
+    <div class="items">
+        <div class="item__row">
+            <%items.forEach(function(item, i) {%>
+                <%if (i != 0 && i % 2 == 0) {%>
+                    </div>
+                    <div class="item__row">
+                <%}%>
 
-            <%- include item.ejs %>
+                <%- include item.ejs %>
 
-            <%if (i == items.length - 1) {%>&nbsp;<%}%>
-        <%})%>
+                <%if (i == items.length - 1) {%>&nbsp;<%}%>
+            <%})%>
+        </div>
     </div>
+
+    <%- include item-view.ejs %>
+
+    <%- include info-block.ejs %>
 </div>
-
-<%- include item-view.ejs %>
-
-<%- include info-block.ejs %>
 
 <%- include handlebars-tmpls.ejs %>
