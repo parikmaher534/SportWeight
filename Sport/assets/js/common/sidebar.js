@@ -21,6 +21,10 @@ $(function() {
         moreBtn.show();
     };
 
+    /**
+     TODO: на ресайз тоже делать магию с сайдбаром
+     $(window).on('resize', function() {})
+    */
 
     // Показываем все категории по клику
     moreBtn.on('click', function() {

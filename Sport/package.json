@@ -24,7 +24,8 @@
     "grunt-contrib-coffee": "~0.10.1",
 
     "mongoose": "*",
-    "sails-mongo": "*"
+    "sails-mongo": "*",
+    "nodemailer": "*"
   },
   "scripts": {
     "start": "node app.js",

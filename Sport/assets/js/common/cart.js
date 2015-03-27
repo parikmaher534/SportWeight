@@ -11,24 +11,25 @@ $(function() {
 
     /* API корзины */
     $(document).on('card.add', addToCart);
+    $(document).on('card.delete', removeFromCard);
     $(document).on('card.draw', drawCartData);
+    $(document).on('card.update', updateCartData);
 
     // Удаляем из корзины
-    $(document).on('click', '.cart-item__close', removeFromCard);
+    $(document).on('click', '.cart-item__close', deleteItem);
 
 
     //TODO: убрать аякс-хуякс и хранить данные на клиенте.
     function addToCart(e, data) {
         var id;
 
-        if (data.block && data.block.length) {
-            id = data.block.data('id');
+        if (data.id) {
 
             // Берём данные о добавляемом в корзину товаре
             $.ajax({
                 url: '/items',
                 type: 'GET',
-                data: { id: id },
+                data: { id: data.id },
                 success: function(item) {
                     onGetItemData(item, data);
                 },
@@ -108,8 +109,6 @@ $(function() {
 
         // Обновляем общую стоимость
         cartTotalPriceBlock.text(cartData.price);
-
-        $.notify('Товар был добавлен в корзину', 'success');
     };
 
 
@@ -142,22 +141,30 @@ $(function() {
         };
     };
 
-    function removeFromCard(e) {
-        var cartData, currentItem,
-            el = $(e.target),
+    function deleteItem(e) {
+        var el = $(e.target),
             item = el.closest('.cart-item'),
-            itemId = item.data('cartitem-id');
+            itemId = item.data('cartitem-id'),
+            isRemoved = removeFromCard(null, {id: itemId});
+
+        if (isRemoved) item.remove();
+    };
+
+    function removeFromCard(e, data) {
+        var cartData,
+            isRemoved = false;
 
         cartData = getCartFromLS();
 
         // Ищем товар в корзине удаляем его из хранилища и из DOM
         cartData.items.forEach(function(cartItem, i) {
-            if (cartItem.item.id == itemId) {
+            if (cartItem.item.id == data.id) {
 
                 cartData.items.splice(i, 1);
-                item.remove();
 
                 cartData.price -= cartItem.totalPrice;
+
+                isRemoved = true;
             };
         });
 
@@ -165,6 +172,44 @@ $(function() {
 
         // Перезаписываем данные о корзине в хранилище
         localStorage.setItem('cart', JSON.stringify(cartData));
+
+        $(document).trigger('card.update', {
+            totalSum: cartData.price
+        });
+
+        data.callback && data.callback(isRemoved);
+
+        return isRemoved;
+    };
+
+    function updateCartData(e, data) {
+        var cartData, cartItem, prevAmount, diff;
+
+        if (data.type == 'item') {
+            cartData = getCartFromLS();
+
+            cartData.items.forEach(function(el, i) {
+                if (el.item.id == data.id) {
+                    cartItem = el;
+                };
+            });
+
+            prevAmount = cartItem.amount;
+            cartItem.amount = data.model.amount;
+
+            diff = (cartItem.amount - prevAmount) * cartItem.item.price;
+
+            cartItem.totalPrice += diff;
+            cartData.price += diff;
+
+            // Перезаписываем данные о корзине в хранилище
+            localStorage.setItem('cart', JSON.stringify(cartData));
+
+            $(document).trigger('card.update', {
+                totalSum: cartData.price,
+                items: cartData.items
+            });
+        };
     };
 
     function getCartFromLS() {
@@ -177,6 +222,7 @@ $(function() {
 
         return false;
     };
+
 
     drawCartData();
 });

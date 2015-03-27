@@ -1,5 +1,5 @@
 $(function() {
-    var beforeScroll,
+    var currentItem, beforeScroll,
 
         itemsBlock = $('.items'),
         itemView = $('.item-view'),
@@ -16,6 +16,7 @@ $(function() {
     /* API END */
 
 
+
     itemsBlock.on('click', function(e) {
         var id,
             el = $(e.target),
@@ -30,7 +31,7 @@ $(function() {
         if (el.closest('.item__cart').length) {
             $(document).trigger('card.add', {
                 amount: +item.find('.item__buy-input').val(),
-                block: item
+                id: item.data('id')
             });
 
             return false;
@@ -48,8 +49,11 @@ $(function() {
                         id: id
                     },
                     success: function(data) {
+                        currentItem = data[0];
+
                         clearView();
 
+                        itemView.data('item-view-id', data[0].id);
                         itemImg.attr('src', data[0].photoFull);
                         itemDesc.html(data[0].description);
                         itemName.html(data[0].name);
@@ -71,6 +75,13 @@ $(function() {
 
     $('.item-view__close').on('click', hide);
 
+    $(document).on('click', '.item-view__cart', function(e) {
+        $(document).trigger('card.add', {
+            amount: +itemView.find('.item-view__buy-input').val(),
+            id: itemView.data('item-view-id')
+        });
+    });
+
     function hide() {
         $('.items').show();
         itemView.removeClass('item-view__show');
@@ -86,5 +97,3 @@ $(function() {
         itemPrice.html('');
     };
 });
-
-

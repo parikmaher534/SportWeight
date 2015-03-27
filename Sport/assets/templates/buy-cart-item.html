@@ -1,0 +1,20 @@
+<script id="buy-cart-item-tmpl" type="text/x-handlebars-template">
+    <div class="buy-cart-item" data-buycartitem-id="{{id}}">
+        <div class="buy-cart-item__wrapper">
+            <div class="buy-cart-item__name">
+                <a href="#" class="link">{{name}}</a>
+            </div>
+
+            <div class="buy-cart-item__amount">
+                <label>Кол-во:</label>
+                <input type="number" value="{{amount}}" min="0" class="buy-cart-item-input"/>
+            </div>
+
+            <div class="buy-cart-item__price">
+                Цена: <span>{{price}}</span> руб
+            </div>
+        </div>
+
+        <div class="buy-cart-item__close">Удалить</div>
+    </div>
+</script>

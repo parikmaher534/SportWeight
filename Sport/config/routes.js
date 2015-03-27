@@ -34,6 +34,10 @@ module.exports.routes = {
 
   '/': {
     controller: 'MainController'
+  },
+
+  '/buy': {
+    controller: 'BuyController'
   }
 
   /***************************************************************************

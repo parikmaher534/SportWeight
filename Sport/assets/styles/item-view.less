@@ -1,26 +1,43 @@
-.item-view__show
-{
-    display: table-cell;
-}
-
 .item-view
 {
     display: none;
     position: relative;
 
-    margin: 100px 220px 0 250px;
+    padding: 0 20px;
+
+    vertical-align: top;
 
     .item-view__close
     {
         position: absolute;
-        right: 0;
+        right: 40px;
+        top: 10px;
 
-        -webkit-transform-origin: 0;
-        -webkit-transform: rotate(45deg);
-                transform: rotate(45deg);
-
-        font-size: 38px;
+        font-size: 14px;
         cursor: pointer;
+        color: darkred;
+        text-transform: uppercase;
+    }
+
+    .item-view__cart
+    {
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        width: 105px;
+
+        .fa
+        {
+            font-size: 18px;
+            vertical-align: middle;
+        }
+
+        span
+        {
+            font-size: 10px;
+            vertical-align: middle;
+        }
     }
 
     .item-view__image
@@ -29,13 +46,20 @@
 
         img
         {
-            max-height: 400px;
+            max-height: 365px;
+
+            margin-top: 30px;
         }
     }
 
-    .item-view__name h3
+    .item-view__name
     {
-        display: inline-block;
+        padding-right: 110px;
+
+        h3
+        {
+            display: inline-block;
+        }
     }
 
     .item-view__description
@@ -60,6 +84,30 @@
 
     .item-view-meta
     {
+        position: relative;
+
         margin-top: 40px;
     }
+
+    .item-view__buy
+    {
+        position: absolute;
+        right: 0;
+        top: -35px;
+
+        font-size: 12px;
+
+        .item-view__buy-input
+        {
+            height: 24px;
+            width: 30px;
+
+            padding: 0 5px;
+        }
+    }
+}
+
+.item-view__show
+{
+    display: table-cell;
 }
